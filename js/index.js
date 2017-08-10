@@ -46,7 +46,11 @@
     }, function (result) {
       if (whale.extension.lastError) {
         console.log("내장스크립트 실행시 에러 :: " + chrome.extension.lastError.message);
-        document.querySelector('#productName').innerHTML = "네이버 쇼핑에서만 동작하는 앱이네요 ^^" ;
+        document.querySelector('#productImg').innerHTML = "네이버 지식쇼핑 검색화면에서 이용해 주세요 ^^ <img src='WhaleMain.png'/>" ;
+        document.querySelector('#validScreen').style.display = 'none';
+      } else {
+        document.querySelector('#productImg').innerHTML = "" ;
+        document.querySelector('#validScreen').style.display = 'block';
       }
       updateScreen(result[0]);
     });
