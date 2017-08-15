@@ -16,7 +16,7 @@ function choosePrice(price, deliveryDom) {
   if(!deliveryDom) {
     return -1;
   }
-  var deliveryFee = deliveryDom.innerText.replace("배송비 ","").replace("원","").replace(",","");
+  var deliveryFee = deliveryDom.innerText.replace("배송비 ","").replace("원","").replace(/,/g,"");
   if(deliveryFee == "무료") {
     return parseInt(price);
   } else {
@@ -32,7 +32,7 @@ function processOneRecord(productOne){
     console.log("가격정보 없음 : " + name);
     return;
   }
-  var price = productOne.querySelector("span.num._price_reload").innerText.replace(",","");
+  var price = productOne.querySelector("span.num._price_reload").innerText.replace(/,/g,"");
   var deliveryDom = productOne.querySelector("div.info_mall > ul > li > em");
   var totalPrice = choosePrice(price, deliveryDom);
   if(totalPrice < 0 ) {
