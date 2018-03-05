@@ -51,8 +51,9 @@
       } else {
         document.querySelector('#productImg').innerHTML = "" ;
         document.querySelector('#validScreen').style.display = 'block';
+        updateScreen(result[0]);
       }
-      updateScreen(result[0]);
+      
     });
   }
 

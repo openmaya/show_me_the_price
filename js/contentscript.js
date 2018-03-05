@@ -12,15 +12,16 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function choosePrice(price, deliveryDom) {
+function extractDeliveryFee(productOneDom) {
+  var deliveryDom = productOneDom.querySelector("div.info_mall > ul > li > em");
   if(!deliveryDom) {
     return -1;
   }
   var deliveryFee = deliveryDom.innerText.replace("배송비 ","").replace("원","").replace(/,/g,"");
   if(deliveryFee == "무료") {
-    return parseInt(price);
+    return 0;
   } else {
-    return (parseInt(price) + parseInt(deliveryFee));
+    return parseInt(deliveryFee);
   }
 }
 
@@ -32,20 +33,32 @@ function processOneRecord(productOne){
     console.log("가격정보 없음 : " + name);
     return;
   }
-  var price = productOne.querySelector("span.num._price_reload").innerText.replace(/,/g,"");
+  var priceString = productOne.querySelector("span.num._price_reload").innerText
+  var price = priceString.replace(/,/g,"");
   var deliveryDom = productOne.querySelector("div.info_mall > ul > li > em");
-  var totalPrice = choosePrice(price, deliveryDom);
-  if(totalPrice < 0 ) {
+  var deliveryFee = extractDeliveryFee(productOne);
+
+  if(deliveryFee < 0 ) {
     console.log("배송비 없음 : " + name);
     return ;
   }
 
+  var totalPrice = parseInt(price) + deliveryFee;
+  var deliveryString = deliveryFee == 0?"배송비 무료": "배송비" + numberWithCommas(deliveryFee) + "원";
+
   var totalPriceString = numberWithCommas(totalPrice);
-  // console.log("비용 : " + totalPriceString);
 
   if(!productOne.querySelector("span.price > p")) {
+    var originalFontSize = '12px';
+    var originalDom = productOne.querySelector("span.price > em");
+    originalDom.style.color = 'black';
+    originalDom.style['font-weight'] = 'normal';
+    originalDom.style['font-size'] = originalFontSize;
+    originalDom.querySelector("span").style['font-size'] = originalFontSize;
     var priceHtml = productOne.querySelector("span.price").innerHTML;
-    productOne.querySelector("span.price").innerHTML = "<p id='tag'>배송비 포함 : " + totalPriceString + "</p>" + priceHtml;
+    var style = "font-weight: bold;margin-bottom:3px ;font-size: 16px !important; color: #16a085;";
+    productOne.querySelector("span.price").innerHTML = "<p class='everdeen' style='" + style + "'>배송비 포함 : " + totalPriceString + "원</p>" + priceHtml;
+
   }
 }
 
