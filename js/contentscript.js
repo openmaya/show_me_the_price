@@ -13,16 +13,23 @@ function numberWithCommas(x) {
 }
 
 function extractDeliveryFee(productOneDom) {
+  var deliveryObj = {};
   var deliveryDom = productOneDom.querySelector("div.info_mall > ul > li > em");
   if(!deliveryDom) {
-    return -1;
+    deliveryObj.type="없음";
+    deliveryObj.price = 0;
+    return deliveryObj;
   }
   var deliveryFee = deliveryDom.innerText.replace("배송비 ","").replace("원","").replace(/,/g,"");
-  if(deliveryFee == "무료") {
-    return 0;
+
+  if(deliveryFee == "무료" || deliveryFee == "착불") {
+    deliveryObj.type = deliveryFee;
+    deliveryObj.price = 0;
   } else {
-    return parseInt(deliveryFee);
+    deliveryObj.type = "유료";
+    deliveryObj.price = parseInt(deliveryFee);
   }
+  return deliveryObj;
 }
 
 function processOneRecord(productOne){
@@ -35,16 +42,15 @@ function processOneRecord(productOne){
   }
   var priceString = productOne.querySelector("span.num._price_reload").innerText
   var price = priceString.replace(/,/g,"");
-  var deliveryDom = productOne.querySelector("div.info_mall > ul > li > em");
-  var deliveryFee = extractDeliveryFee(productOne);
+  var deliveryObj = extractDeliveryFee(productOne);
 
-  if(deliveryFee < 0 ) {
-    console.log("배송비 없음 : " + name);
+  if(deliveryObj.type == "없음" ) {
+    // 배송비 정보 없음
     return ;
   }
 
-  var totalPrice = parseInt(price) + deliveryFee;
-  var deliveryString = deliveryFee == 0?"배송비 무료": "배송비" + numberWithCommas(deliveryFee) + "원";
+  var totalPrice = parseInt(price) + deliveryObj.price;
+  var deliveryString = deliveryObj.type == "착불"? "착불 : ": "배송비 포함 : ";
 
   var totalPriceString = numberWithCommas(totalPrice);
 
@@ -57,7 +63,7 @@ function processOneRecord(productOne){
     originalDom.querySelector("span").style['font-size'] = originalFontSize;
     var priceHtml = productOne.querySelector("span.price").innerHTML;
     var style = "font-weight: bold;margin-bottom:3px ;font-size: 16px !important; color: #16a085;";
-    productOne.querySelector("span.price").innerHTML = "<p class='everdeen' style='" + style + "'>배송비 포함 : " + totalPriceString + "원</p>" + priceHtml;
+    productOne.querySelector("span.price").innerHTML = "<p class='everdeen' style='" + style + "'>" + deliveryString + totalPriceString + "원</p>" + priceHtml;
 
   }
 }

@@ -25,6 +25,7 @@ console.log("스크립트 삽입 및 시작");
         return -1;
       }
       var deliveryFee = deliveryDom.innerText.replace("배송비 ","").replace("원","").replace(/,/g,"");
+      console.log("배송비 택스트 ::" + deliveryFee);
       if(deliveryFee == "무료") {
         return parseInt(price);
       } else {
