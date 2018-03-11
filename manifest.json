@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Naver Shopping Extension",
   "description": "Naver Shopping Price with delivery price",
-  "version": "2.0",
+  "version": "2.1",
   "icons": {
     "16": "icons/icon16.png", /* used in context menu icon */
     "48": "icons/icon48.png",
