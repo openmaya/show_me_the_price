@@ -68,5 +68,25 @@ function processOneRecord(productOne){
   }
 }
 
-var productRecords = document.querySelectorAll("div ul.goods_list > li");
-productRecords.forEach(processOneRecord);
+function refreshScreen(sortMenuDom) {
+  sortMenuDom.addEventListener('click', function(event){
+    console.log("click 이벤트 먹음"+ event);
+    setTimeout(findPrice, 500);
+  });
+}
+
+function findPrice() {
+  var productRecords = document.querySelectorAll("div ul.goods_list > li");
+  productRecords.forEach(processOneRecord);
+
+  var sortMenusDom = document.querySelectorAll("div.sort_area ul.sort_list > li");
+  sortMenusDom.forEach(refreshScreen);
+
+  var snbMenusDom = document.querySelectorAll("div.snb_search ul.snb_list > li");
+  snbMenusDom.forEach(refreshScreen);
+
+  var pageDom = document.querySelectorAll("div.co_paginate > a");
+  pageDom.forEach(refreshScreen);
+}
+
+findPrice();
