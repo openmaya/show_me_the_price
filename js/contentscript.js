@@ -33,15 +33,26 @@ function extractDeliveryFee(productOneDom) {
 }
 
 function processOneRecord(productOne){
-  var name = productOne.querySelector("div.info > a").innerText;
-  var imgUrl = productOne.querySelector("div.img_area > a > img").getAttribute("data-original");
-  var url = productOne.querySelector("div.info > a").href;
-  if(!(productOne.querySelector("span.num._price_reload"))) {
-    console.log("가격정보 없음 : " + name);
+  const nameDom = productOne.querySelector("div.tit > a");
+  if (!nameDom) {
+    console.log('상품명 검색 실패');
     return;
   }
-  var priceString = productOne.querySelector("span.num._price_reload").innerText
-  var price = priceString.replace(/,/g,"");
+  var name = nameDom.innerText;
+  const imageDom = productOne.querySelector("div.img_area > a > img");
+  var imgUrl = imageDom.getAttribute("data-original");
+  var url = nameDom.href;
+  const priceDom = productOne.querySelector("span.num._price_reload");
+  const priceDom2 = productOne.querySelector("span.num");
+  
+  var price = 0;
+  if(priceDom) {
+    price = parseInt(priceDom.innerText.replace(/,/g,""));
+  } else if (priceDom2) {
+    console.log("1차 가격정보 없음 : " + name);
+    price = parseInt(priceDom2.innerText.replace(/,/g,""));
+  }
+  
   var deliveryObj = extractDeliveryFee(productOne);
 
   if(deliveryObj.type == "없음" ) {
@@ -49,7 +60,7 @@ function processOneRecord(productOne){
     return ;
   }
 
-  var totalPrice = parseInt(price) + deliveryObj.price;
+  var totalPrice = price + deliveryObj.price;
   var deliveryString = deliveryObj.type == "착불"? "착불 : ": "배송비 포함 : ";
 
   var totalPriceString = numberWithCommas(totalPrice);
