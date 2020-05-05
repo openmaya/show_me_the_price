@@ -4,13 +4,13 @@
   "description": "Naver Shopping Price with delivery price",
   "version": "2.2",
   "icons": {
-    "16": "icons/icon16.png", /* used in context menu icon */
+    "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "sidebar_action": {
     "default_icon": {
-      "16": "icons/icon16.png" /* used in sidebar menu icon */
+      "16": "icons/icon16.png" 
     },
     "default_page": "index.html",
     "default_title": "Naver Shopping Sidebar Extension"
