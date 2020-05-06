@@ -29,11 +29,18 @@ html, body {
   margin: 5px auto 15px;
 }
 
-.section .title {
+.section .title{
   font-size: 16px;
   padding: 10px;
   text-align: center;
   background-color: #dddddd;
+  
+}
+
+a {
+  font-weight: bold;
+  line-height: 20px;
+  color: #000;
 }
 
 .section .buttons {
@@ -52,7 +59,11 @@ html, body {
 
 .section .description {
   padding: 10px 25px;
-  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 3px;
+  font-size: 16px;
+  color: #16a085;
 }
 
 .section .image {

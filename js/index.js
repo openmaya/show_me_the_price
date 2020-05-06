@@ -57,9 +57,21 @@
     });
   }
 
+  /**
+   * 
+   * @param {*} minimumProduct {
+   *  minimalist.productName = "상품명";
+      minimalist.price = 10000000;
+      minimalist.url = "";
+      minimalist.imgUrl = "";
+   * }
+   */
   function updateScreen(minimumProduct) {
+    console.log(minimumProduct);
     document.querySelector('#productName').innerHTML =
       "<a href='" + minimumProduct.url + "' >" + minimumProduct.productName + "</a>";
+    document.querySelector('#productImg').innerHTML =
+      "<img src='" + minimumProduct.imgUrl + "' />";
     document.querySelector('#productPrice').innerText =
       "배송비 포함 가격 : " + numberWithCommas(minimumProduct.price) + "원\n";
   }

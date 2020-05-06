@@ -33,29 +33,70 @@ console.log("스크립트 삽입 및 시작");
       }
     }
 
+    function extractDeliveryFee(productOneDom) {
+      var deliveryObj = {};
+      var deliveryDom = productOneDom.querySelector("div.info_mall > ul > li > em");
+      if(!deliveryDom) {
+        deliveryObj.type="없음";
+        deliveryObj.price = 0;
+        return deliveryObj;
+      }
+      var deliveryFee = deliveryDom.innerText.replace("배송비 ","").replace("원","").replace(/,/g,"");
+    
+      if(deliveryFee == "무료" || deliveryFee == "착불") {
+        deliveryObj.type = deliveryFee;
+        deliveryObj.price = 0;
+      } else {
+        deliveryObj.type = "유료";
+        deliveryObj.price = parseInt(deliveryFee);
+      }
+      return deliveryObj;
+    }
+
     function processOneRecord(productOne){
-      var name = productOne.querySelector("div.info > a").innerText;
-      var imgUrl = productOne.querySelector("div.img_area > a > img").getAttribute("data-original");
-      var url = productOne.querySelector("div.info > a").href;
-      if(!(productOne.querySelector("span.num._price_reload"))) {
-        console.log("가격정보 없음 : " + name);
+      const nameDom = productOne.querySelector("div.tit > a");
+      if (!nameDom) {
+        console.log('상품명 검색 실패');
         return;
       }
-      var price = productOne.querySelector("span.num._price_reload").innerText.replace(/,/g,"");
+      var name = nameDom.innerText;
+      const imageDom = productOne.querySelector("div.img_area > a > img");
+      var imgUrl = imageDom.getAttribute("data-original");
+      var url = nameDom.href;
+      const priceDom = productOne.querySelector("span.num._price_reload");
+      const priceDom2 = productOne.querySelector("span.num");
+      
+      var price = 0;
+      if(priceDom) {
+        price = parseInt(priceDom.innerText.replace(/,/g,""));
+      } else if (priceDom2) {
+        console.log("1차 가격정보 없음 : " + name);
+        price = parseInt(priceDom2.innerText.replace(/,/g,""));
+      }
+      
+      var deliveryObj = extractDeliveryFee(productOne);
 
-      var deliveryDom = productOne.querySelector("div.info_mall > ul > li > em");
-      var totalPrice = choosePrice(price, deliveryDom);
-      if(totalPrice < 0 ) {
-        console.log("배송비 없음 : " + name);
+      if(deliveryObj.type == "없음" ) {
+        // 배송비 정보 없음
         return ;
       }
 
+      var totalPrice = price + deliveryObj.price;
+      var deliveryString = deliveryObj.type == "착불"? "착불 : ": "배송비 포함 : ";
+
       var totalPriceString = numberWithCommas(totalPrice);
-      // console.log("비용 : " + totalPriceString);
 
       if(!productOne.querySelector("span.price > p")) {
+        var originalFontSize = '12px';
+        var originalDom = productOne.querySelector("span.price > em");
+        originalDom.style.color = 'black';
+        originalDom.style['font-weight'] = 'normal';
+        originalDom.style['font-size'] = originalFontSize;
+        originalDom.querySelector("span").style['font-size'] = originalFontSize;
         var priceHtml = productOne.querySelector("span.price").innerHTML;
-        productOne.querySelector("span.price").innerHTML = "<p id='tag'>배송비 포함 : " + totalPriceString + "</p>" + priceHtml;
+        var style = "font-weight: bold;margin-bottom:3px ;font-size: 16px !important; color: #16a085;";
+        productOne.querySelector("span.price").innerHTML = "<p class='everdeen' style='" + style + "'>" + deliveryString + totalPriceString + "원</p>" + priceHtml;
+
       }
 
       updateMinimalist(name, url, totalPrice, imgUrl);
